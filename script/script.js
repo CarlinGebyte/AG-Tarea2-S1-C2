@@ -1,6 +1,5 @@
-const API_URL =
-    "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=3fd2be6f0c70a2a598f084ddfb75487c&page=1";
-const IMG_PATH = `https://image.tmdb.org/t/p/w1280`;
+const API_URL = "https://rickandmortyapi.com/api/character/";
+// const IMG_PATH = `https://rickandmortyapi.com/api/character/avatar/`;
 const SEARCH_URL =
     'http://api.themoviedb.org/3/search/movie?api_key=3fd2be6f0c70a2a598f084ddfb75487c&query="';
 
@@ -8,7 +7,7 @@ const form = document.getElementById("form");
 const search = document.getElementById("search");
 const main = document.querySelector("#main");
 
-const getMovies = async (url) => {
+const getCharacters = async (url) => {
     try {
         const res = await fetch(url);
         const data = await res.json();
@@ -20,7 +19,7 @@ const getMovies = async (url) => {
                 confirmButtonText: "Aceptar",
             });
         } else {
-            showMovies(data.results);
+            showCharacters(data.results);
         }
     } catch (error) {
         swal.fire({
@@ -32,35 +31,35 @@ const getMovies = async (url) => {
     }
 };
 
-getMovies(API_URL);
+getCharacters(API_URL);
 
-const showMovies = (movies) => {
+const showCharacters = (characters) => {
     main.innerHTML = "";
-    movies.forEach(movie => {
-        const { title, poster_path, vote_average, overview } = movie;
+    characters.forEach(character => {
+        const { name, image, status, species} = character;
         const movieDiv = document.createElement("div");
         movieDiv.classList.add("movie");
         movieDiv.innerHTML = `
-        <img src="${IMG_PATH + poster_path}" alt="">
+        <img src="${image}" alt="">
         <div class="movie-info">
-            <h3>${title}</h3>
-            <span class="green">${vote_average}</span>
+            <h3>${name}</h3>
+            <span class="green">${status}</span>
         </div>
         <div class="overview">
         <h3>Overview</h3>
-            <h3>${overview}</h3>
+            <p>${species}</p>
         </div>
         `
         main.appendChild(movieDiv);
     });
-    console.log(movies)
+    console.log(characters)
 }
 
 form.addEventListener('submit', e => {
     e.preventDefault();
     const searchTerm = search.value.toLocaleLowerCase();
     if (searchTerm != "") {
-        movies = getMovies(SEARCH_URL + searchTerm);
+        movies = getCharacters(SEARCH_URL + searchTerm);
         search.value = '';
     } else {
         swal.fire({
