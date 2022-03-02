@@ -1,7 +1,6 @@
 const API_URL = "https://rickandmortyapi.com/api/character/";
 // const IMG_PATH = `https://rickandmortyapi.com/api/character/avatar/`;
-const SEARCH_URL =
-    'http://api.themoviedb.org/3/search/movie?api_key=3fd2be6f0c70a2a598f084ddfb75487c&query="';
+const SEARCH_URL = "https://rickandmortyapi.com/api/character/?name=";
 
 const form = document.getElementById("form");
 const search = document.getElementById("search");
@@ -11,10 +10,10 @@ const getCharacters = async (url) => {
     try {
         const res = await fetch(url);
         const data = await res.json();
-        if (data.results.length === 0) {
+        if (data.results === undefined) {
             swal.fire({
                 title: "Error!",
-                text: "No se ha encontrado ninguna pelicula",
+                text: "No se ha encontrado ningún personaje",
                 icon: "error",
                 confirmButtonText: "Aceptar",
             });
@@ -36,7 +35,7 @@ getCharacters(API_URL);
 const showCharacters = (characters) => {
     main.innerHTML = "";
     characters.forEach(character => {
-        const { name, image, status, species} = character;
+        const { name, image, status, species, gender, origin, location, created} = character;
         const movieDiv = document.createElement("div");
         movieDiv.classList.add("movie");
         movieDiv.innerHTML = `
@@ -47,9 +46,13 @@ const showCharacters = (characters) => {
         </div>
         <div class="overview">
         <h3>Overview</h3>
-            <p>${species}</p>
+            <p>Especie: ${species} <br>
+                Género ${gender} <br>
+                Origen: ${origin.name} <br>
+                Localización: ${location.name} <br>
+                Fecha: ${created}</p>
         </div>
-        `
+        `;
         main.appendChild(movieDiv);
     });
     console.log(characters)
@@ -59,12 +62,12 @@ form.addEventListener('submit', e => {
     e.preventDefault();
     const searchTerm = search.value.toLocaleLowerCase();
     if (searchTerm != "") {
-        movies = getCharacters(SEARCH_URL + searchTerm);
+        characters = getCharacters(SEARCH_URL + searchTerm);
         search.value = '';
     } else {
         swal.fire({
             title: "Error!",
-            text: "Do you want to continue",
+            text: "Por favor, ingresa un texto para buscar",
             icon: "error",
             confirmButtonText: "Cool",
         });
